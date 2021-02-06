@@ -6,6 +6,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
+include_directories(.)
+
 add_executable(tests
     testMain.cpp
     testTile.cpp

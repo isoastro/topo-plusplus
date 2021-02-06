@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <cmath>
 #include "Tile.h"
 #include "cpr/cpr.h"
 
@@ -33,11 +34,14 @@ Tile::Tile(int x, int y, int zoom, bool cache) : m_x(x), m_y(y), m_zoom(zoom) {
         for (std::size_t i = 0; i < TILE_DIM_Y; i++) {
             for (std::size_t j = 0; j < TILE_DIM_X; j++) {
                 auto idx = j + i * TILE_DIM_X;
-                m_pixels[i][j] = {
+                m_elevation[i][j] = rgbToMeters(
                     res[idx * PNG_CHANNELS + 0],
                     res[idx * PNG_CHANNELS + 1],
-                    res[idx * PNG_CHANNELS + 2],
-                };
+                    res[idx * PNG_CHANNELS + 2]
+                    );
+
+                // Make a new point from calculated lat, lon (from tile coords) and alt (from pixel data)
+                LatLon ll =
             }
         }
 
@@ -57,13 +61,21 @@ std::string Tile::coordsToURL(int x, int y, int zoom) {
     return url.str();
 }
 
-float Tile::rgbToMeters(uint8_t r, uint8_t g, uint8_t b) {
+double Tile::rgbToMeters(uint8_t r, uint8_t g, uint8_t b) {
     return (
-        static_cast<float>(r) * 256.0f +
-        static_cast<float>(g) +
-        static_cast<float>(b) / 256.0f -
-        32768.0f
+        static_cast<double>(r) * 256.0 +
+        static_cast<double>(g) +
+        static_cast<double>(b) / 256.0 -
+        32768.0
         );
+}
+
+LatLon Tile::coordsToLatLon(double x, double y, int zoom) {
+    double n = std::pow(2.0, static_cast<double>(zoom));
+    return {
+        .lat = std::atan(std::sinh(M_PI * (1.0 - 2.0 * y / n)));
+        .lon = x / n * 2 * M_PI - M_PI_2;
+    }
 }
 
 

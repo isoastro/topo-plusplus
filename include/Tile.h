@@ -5,13 +5,14 @@
 #include <cstdint>
 #include <string>
 #include <array>
+#include "geometry.h"
 
 constexpr std::size_t TILE_DIM_X = 256;
 constexpr std::size_t TILE_DIM_Y = 256;
 constexpr std::size_t PNG_CHANNELS = 3;
 
-using Pixel = std::array<uint8_t, 3>;
 
+// Storage container for raw elevation data, in Web Mercator projection
 class Tile {
 public:
     Tile(int x, int y, int zoom, bool cache=true);
@@ -21,9 +22,9 @@ public:
 
     // TODO: Could be cool to add static methods to construct from a filename string?
 
-protected:
     static std::string coordsToURL(int x, int y, int zoom);
-    static float rgbToMeters(uint8_t r, uint8_t g, uint8_t b);
+    static double rgbToMeters(uint8_t r, uint8_t g, uint8_t b);
+    static LatLon coordsToLatLon(double x, double y, int zoom);
 
 private:
     int m_x;
@@ -32,7 +33,8 @@ private:
 
     bool m_valid = false;
 
-    Pixel m_pixels[TILE_DIM_Y][TILE_DIM_X] = {{{0}}};
+    double m_elevation[TILE_DIM_Y][TILE_DIM_X] = {{0}};
+    Point m_data[TILE_DIM_Y][TILE_DIM_X] = {{{}}};
 };
 
 #endif // _Tile_H_

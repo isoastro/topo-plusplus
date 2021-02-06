@@ -10,4 +10,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(cpr)
 target_link_libraries(Tile PRIVATE cpr::cpr)
 
-target_link_libraries(topo Tile)
+# 3d surface container
+add_library(Surface Surface.cpp)
+
+
+target_link_libraries(topo
+    Tile
+    Surface
+)
