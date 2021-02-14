@@ -9,9 +9,11 @@ FetchContent_MakeAvailable(Catch2)
 include_directories(.)
 
 add_executable(tests
+    testCommon.h
     testMain.cpp
     testTile.cpp
 )
+add_dependencies(tests Tile)
 
 target_link_libraries(tests
     PRIVATE Catch2::Catch2

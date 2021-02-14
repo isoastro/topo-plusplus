@@ -43,6 +43,4 @@ struct Point {
     }
 };
 
-
-
 #endif // _geometry_H_
