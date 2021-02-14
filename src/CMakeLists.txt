@@ -1,7 +1,7 @@
 add_executable(topo main.cpp)
 
 # Tile utilities
-add_library(Tile Tile.cpp)
+add_library(Tile STATIC Tile.cpp ../include/Tile.h)
 FetchContent_Declare(
     cpr
     GIT_REPOSITORY https://github.com/whoshuu/cpr.git
@@ -11,10 +11,14 @@ FetchContent_MakeAvailable(cpr)
 target_link_libraries(Tile PRIVATE cpr::cpr)
 
 # 3d surface container
-add_library(Surface Surface.cpp)
+add_library(Surface STATIC Surface.cpp)
 
+# Collection of tiles --> Surface
+add_library(TileSurface STATIC TileSurface.cpp)
+add_dependencies(TileSurface Tile Surface)
 
 target_link_libraries(topo
     Tile
     Surface
+    TileSurface
 )

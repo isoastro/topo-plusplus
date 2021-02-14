@@ -34,14 +34,15 @@ Tile::Tile(int x, int y, int zoom, bool cache) : m_x(x), m_y(y), m_zoom(zoom) {
         for (std::size_t i = 0; i < TILE_DIM_Y; i++) {
             for (std::size_t j = 0; j < TILE_DIM_X; j++) {
                 auto idx = j + i * TILE_DIM_X;
-                m_elevation[i][j] = rgbToMeters(
+                auto elev = rgbToMeters(
                     res[idx * PNG_CHANNELS + 0],
                     res[idx * PNG_CHANNELS + 1],
                     res[idx * PNG_CHANNELS + 2]
-                    );
-
-                // Make a new point from calculated lat, lon (from tile coords) and alt (from pixel data)
-                LatLon ll =
+                );
+                LatLon ll = coordsToLatLon(static_cast<double>(x) + j / 256.0,
+                                           static_cast<double>(y) + i / 256.0,
+                                           zoom);
+                m_data[i][j] = {ll.lat, ll.lon, elev};
             }
         }
 
@@ -73,9 +74,13 @@ double Tile::rgbToMeters(uint8_t r, uint8_t g, uint8_t b) {
 LatLon Tile::coordsToLatLon(double x, double y, int zoom) {
     double n = std::pow(2.0, static_cast<double>(zoom));
     return {
-        .lat = std::atan(std::sinh(M_PI * (1.0 - 2.0 * y / n)));
-        .lon = x / n * 2 * M_PI - M_PI_2;
-    }
+        .lat = std::atan(std::sinh(M_PI * (1.0 - 2.0 * y / n))),
+        .lon = x / n * (2 * M_PI) - M_PI,
+    };
 }
 
-
+LatLon Tile::upperLeft() const {
+    return coordsToLatLon(static_cast<double>(m_x),
+                          static_cast<double>(m_y),
+                          m_zoom);
+}
