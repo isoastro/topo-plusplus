@@ -2,12 +2,14 @@
 #include "TileSurface.h"
 
 TEST_CASE("Construction of a tile surface", "[TileSurface]") {
-    int zoom = 3;
-    int numX = 3;
-    int numY = 4;
+    constexpr int zoom = 3;
+    constexpr int startX = 1;
+    constexpr int numX = 3;
+    constexpr int startY = 2;
+    constexpr int numY = 2;
     std::vector<Tile> tiles;
-    for (int x = 0; x < numX; x++) {
-        for (int y = 0; y < numY; y++) {
+    for (int x = startX; x < startX + numX; x++) {
+        for (int y = startY; y < startY + numY; y++) {
             tiles.emplace_back(x, y, zoom);
         }
     }
@@ -20,7 +22,7 @@ TEST_CASE("Construction of a tile surface", "[TileSurface]") {
     auto surf = TileSurface(tiles);
     CHECK(surf.size() == numX * numY * TILE_DIM_X * TILE_DIM_Y);
     for (const auto & point : surf) {
-        auto uninitialized = (point.lat == 0.0) && (point.lon == 0.0) && (point.alt == 0.0);
+        auto uninitialized = std::isnan(point.lat) || std::isnan(point.lon) || std::isnan(point.alt);
         CHECK(uninitialized == false);
     }
 }

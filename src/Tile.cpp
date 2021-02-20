@@ -75,12 +75,29 @@ LatLon Tile::coordsToLatLon(double x, double y, int zoom) {
     double n = std::pow(2.0, static_cast<double>(zoom));
     return {
         .lat = std::atan(std::sinh(M_PI * (1.0 - 2.0 * y / n))),
-        .lon = x / n * (2 * M_PI) - M_PI,
+        .lon = x / n * (2.0 * M_PI) - M_PI,
     };
 }
 
-LatLon Tile::upperLeft() const {
-    return coordsToLatLon(static_cast<double>(m_x),
-                          static_cast<double>(m_y),
-                          m_zoom);
+XY Tile::latLonToCoords(double lat, double lon, int zoom) {
+    double n = std::pow(2.0, static_cast<double>(zoom));
+    return {
+        .x = n * ((lon + M_PI) / (2.0 * M_PI)),
+        .y = n * (1.0 - (std::log(std::tan(lat) + secant(lat)) / M_PI)) / 2.0,
+    };
+}
+
+BoundingBox Tile::boundingBox() const {
+    auto northwest = coordsToLatLon(static_cast<double>(m_x),
+                                    static_cast<double>(m_y),
+                                    m_zoom);
+    auto southeast = coordsToLatLon(static_cast<double>(m_x + 1),
+                                    static_cast<double>(m_y + 1),
+                                    m_zoom);
+    return {
+        .west = northwest.lon,
+        .east = southeast.lon,
+        .north = northwest.lat,
+        .south = southeast.lat,
+    };
 }

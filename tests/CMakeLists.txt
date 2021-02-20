@@ -6,21 +6,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-include_directories(.)
-
 add_executable(tests
-    testCommon.h
+#    testCommon.h
     testMain.cpp
     testTile.cpp
     testTileSurface.cpp
 )
 add_dependencies(tests Tile TileSurface)
+target_include_directories(tests PUBLIC . ../include)
 
 target_link_libraries(tests
     PRIVATE Catch2::Catch2
-    Tile
-    Surface
-    TileSurface
+    PUBLIC Tile
+           Surface
+           TileSurface
+           geometry
 )
 
 add_test(NAME tests COMMAND tests)

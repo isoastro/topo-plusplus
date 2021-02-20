@@ -7,6 +7,8 @@
 #include <array>
 #include "geometry.h"
 
+using namespace geometry;
+
 constexpr std::size_t TILE_DIM_X = 256;
 constexpr std::size_t TILE_DIM_Y = 256;
 constexpr std::size_t PNG_CHANNELS = 3;
@@ -18,19 +20,21 @@ public:
     Tile(int x, int y, int zoom, bool cache=true);
     ~Tile() = default;
 
-    int x() const { return m_x; }
-    int y() const { return m_y; }
-    int zoom() const { return m_zoom; }
-    bool valid() const { return m_valid; }
+    [[nodiscard]] int x() const { return m_x; }
+    [[nodiscard]] int y() const { return m_y; }
+    [[nodiscard]] int zoom() const { return m_zoom; }
+    [[nodiscard]] bool valid() const { return m_valid; }
 
-    LatLon upperLeft() const; // Upper left corner of the tile
-    const std::array<LLA, TILE_DIM_X> & row(size_t idx) const { return m_data[idx]; }
+    [[nodiscard]] const std::array<LLA, TILE_DIM_X> & row(size_t idx) const { return m_data[idx]; }
 
     // TODO: Could be cool to add static methods to construct from a filename string?
 
     static std::string coordsToURL(int x, int y, int zoom);
     static double rgbToMeters(uint8_t r, uint8_t g, uint8_t b);
     static LatLon coordsToLatLon(double x, double y, int zoom);
+    static XY latLonToCoords(double lat, double lon, int zoom);
+
+    [[nodiscard]] BoundingBox boundingBox() const;
 
 private:
     int m_x;

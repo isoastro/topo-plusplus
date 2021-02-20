@@ -4,6 +4,8 @@
 #include <vector>
 #include "geometry.h"
 
+using namespace geometry;
+
 class Surface {
 public:
     // Apply a function to every point in the surface -- can transform lat, lon, or alt
@@ -11,28 +13,30 @@ public:
     void apply(UnaryFunction f);
 
     // Scale each elevation point by a given factor (to exaggerate elevation, for example)
-    void scale(double factor);
+    void scaleAlt(double factor);
 
-    size_t numLat() const { return m_numLat; }
-    size_t numLon() const { return m_numLon; }
+    [[nodiscard]] size_t numLat() const { return m_numLat; }
+    [[nodiscard]] size_t numLon() const { return m_numLon; }
 
-    std::vector<LLA>::iterator begin() { return m_data.begin(); }
-    std::vector<LLA>::iterator end() { return m_data.end(); }
-    std::vector<LLA>::const_iterator cbegin() const { return m_data.cbegin(); }
-    std::vector<LLA>::const_iterator cend() const { return m_data.cend(); }
-    std::vector<LLA>::reverse_iterator rbegin() { return m_data.rbegin(); }
-    std::vector<LLA>::reverse_iterator rend() { return m_data.rend(); }
-    std::vector<LLA>::const_reverse_iterator crbegin() const { return m_data.crbegin(); }
-    std::vector<LLA>::const_reverse_iterator crend () const { return m_data.crend(); }
-
-    size_t size() { return m_data.size(); }
+    // Expose the underlying data
+    // Thou shalt only iterate constly
+    [[nodiscard]] auto begin() const { return m_data.cbegin(); }
+    [[nodiscard]] auto end() const { return m_data.cend(); }
+    [[nodiscard]] auto rbegin() const { return m_data.crbegin(); }
+    [[nodiscard]] auto rend() const { return m_data.crend(); }
+    [[nodiscard]] auto size() const { return m_data.size(); }
+    [[nodiscard]] const LLA & at(size_t x, size_t y) const;
 protected:
+    [[nodiscard]] size_t subToIdx(size_t x, size_t y) const;
+
     std::vector<LLA> m_data = {};
 
     // Overall dimensions in lat/lon
     // m_data.size() == m_numLat * m_numLon
     size_t m_numLat = 0;
     size_t m_numLon = 0;
+
+    BoundingBox m_boundingBox = {0, 0, 0, 0};
 };
 
 #endif // _Surface_H_

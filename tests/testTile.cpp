@@ -2,6 +2,8 @@
 #include "Tile.h"
 #include "testCommon.h"
 
+constexpr double maxLat = 1.4844222297453323;
+
 TEST_CASE("Get Tile", "[Tile]") {
     auto t = new Tile(5, 5, 10);
 }
@@ -36,7 +38,7 @@ TEST_CASE("XY coords to LatLon", "[Tile]") {
         // Always the same coordinate regardless of zoom level (upper left of world map)
         for (int zoom = 0; zoom < 15; zoom++) {
             res = Tile::coordsToLatLon(0, 0, zoom);
-            compareReals(res.lat, +1.4844222297453323);
+            compareReals(res.lat, maxLat);
             compareReals(res.lon, -M_PI);
         }
     }
@@ -45,7 +47,7 @@ TEST_CASE("XY coords to LatLon", "[Tile]") {
             int x = static_cast<int>(std::pow(2, zoom));
             int y = x;
             res = Tile::coordsToLatLon(x, y, zoom);
-            compareReals(res.lat, -1.4844222297453323);
+            compareReals(res.lat, -maxLat);
             compareReals(res.lon, M_PI);
         }
     }
@@ -58,9 +60,39 @@ TEST_CASE("XY coords to LatLon", "[Tile]") {
             compareReals(res.lon, 0.0);
         }
     }
-    SECTION("x = 11, y= 19, zoom = 5") {
+    SECTION("x = 11, y = 19, zoom = 5") {
         res = Tile::coordsToLatLon(11, 19, 5);
         compareReals(res.lat, -0.55767043418493578);
         compareReals(res.lon, -0.98174770424681057);
+    }
+}
+
+TEST_CASE("LatLon to XY coords", "[Tile]") {
+    XY res;
+    SECTION("zero lat/lon") {
+        // Will always be half of 2^zoom
+        for (int zoom = 0; zoom < 15; zoom++) {
+            double halfN = (std::pow(2.0, static_cast<double>(zoom))) / 2.0;
+            res = Tile::latLonToCoords(0, 0, zoom);
+            compareReals(res.x, halfN);
+            compareReals(res.y, halfN);
+        }
+    }
+
+    SECTION("bottom right") {
+        for (int zoom = 0; zoom < 15; zoom++) {
+            double n = std::pow(2.0, static_cast<double>(zoom));
+            res = Tile::latLonToCoords(-maxLat, M_PI, zoom);
+            // There's a very small amount of error here that gets worse the more we zoom in
+            // x and y get relatively large so compare using a number of significant figures rather than machine epsilon
+            compareRealsSigFigs<double, 15>(res.x, n);
+            compareRealsSigFigs<double, 15>(res.y, n);
+        }
+    }
+
+    SECTION("x = 11, y = 19, zoom = 5") {
+        res = Tile::latLonToCoords(-0.55767043418493578, -0.98174770424681057, 5);
+        compareRealsSigFigs<double, 15>(res.x, 11.0);
+        compareRealsSigFigs<double, 15>(res.y, 19.0);
     }
 }

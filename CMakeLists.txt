@@ -4,7 +4,6 @@ project(topo_plusplus)
 set(CMAKE_CXX_STANDARD 20)
 include(FetchContent)
 
-include_directories(include)
 add_subdirectory(src)
 
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
