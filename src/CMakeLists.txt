@@ -14,8 +14,9 @@ target_link_libraries(Tile PRIVATE cpr::cpr)
 add_library(Surface STATIC Surface.cpp)
 
 # Collection of tiles --> Surface
-add_library(TileSurface STATIC TileSurface.cpp)
-add_dependencies(TileSurface Tile Surface)
+add_library(TileSurface INTERFACE)
+target_sources(TileSurface INTERFACE ../include/TileSurface.h)
+target_link_libraries(TileSurface INTERFACE Tile Surface)
 
 target_link_libraries(topo
     Tile

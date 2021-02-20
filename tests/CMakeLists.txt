@@ -12,10 +12,15 @@ add_executable(tests
     testCommon.h
     testMain.cpp
     testTile.cpp
+    testTileSurface.cpp
 )
-add_dependencies(tests Tile)
+add_dependencies(tests Tile TileSurface)
 
 target_link_libraries(tests
     PRIVATE Catch2::Catch2
     Tile
+    Surface
+    TileSurface
 )
+
+add_test(NAME tests COMMAND tests)
