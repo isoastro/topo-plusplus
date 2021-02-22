@@ -23,9 +23,9 @@ target_link_libraries(Surface
     PUBLIC geometry)
 
 # Collection of tiles --> Surface
-add_library(TileSurface INTERFACE)
-target_sources(TileSurface INTERFACE ../include/TileSurface.h)
-target_link_libraries(TileSurface INTERFACE Tile Surface)
+add_library(TileSurface SHARED TileSurface.cpp)
+target_link_libraries(TileSurface
+    PUBLIC Tile Surface)
 
 target_link_libraries(topo
     Tile
