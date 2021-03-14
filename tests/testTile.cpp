@@ -5,7 +5,21 @@
 constexpr double maxLat = 1.4844222297453323;
 
 TEST_CASE("Get Tile", "[Tile]") {
-    auto t = new Tile(5, 5, 10);
+    SECTION("Valid (5, 7, 10)") {
+        auto t = Tile(5, 7, 10);
+        CHECK(t.valid() == true);
+        CHECK(t.x() == 5);
+        CHECK(t.y() == 7);
+        CHECK(t.zoom() == 10);
+    }
+
+    SECTION("Invalid (5, 7, 1)") {
+        auto t = Tile(5, 7, 1);
+        CHECK(t.valid() == false);
+        CHECK(t.x() == 5);
+        CHECK(t.y() == 7);
+        CHECK(t.zoom() == 1);
+    }
 }
 
 TEST_CASE("RGB to meters", "[Tile]") {

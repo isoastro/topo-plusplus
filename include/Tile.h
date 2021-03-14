@@ -34,6 +34,8 @@ public:
     static LatLon coordsToLatLon(double x, double y, int zoom);
     static XY latLonToCoords(double lat, double lon, int zoom);
 
+    static constexpr int N(int zoom) { return 1u << zoom; }
+
     [[nodiscard]] BoundingBox boundingBox() const;
 
 private:

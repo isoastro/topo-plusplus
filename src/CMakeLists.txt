@@ -6,6 +6,11 @@ target_include_directories(geometry PUBLIC ../include)
 # Tile utilities
 add_library(Tile SHARED Tile.cpp)
 target_include_directories(Tile PUBLIC ../include)
+
+# Turn off extra test/coverage options, then get cpr library
+set(BUILD_CPR_TESTS OFF)
+set(BUILD_CPR_TESTS_SSL OFF)
+set(GENERATE_COVERAGE OFF)
 FetchContent_Declare(
     cpr
     GIT_REPOSITORY https://github.com/whoshuu/cpr.git

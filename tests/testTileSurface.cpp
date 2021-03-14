@@ -1,9 +1,59 @@
 #include "catch2/catch.hpp"
+#include "testCommon.h"
 #include "TileSurface.h"
+#include "TileSurfaceTest.h"
 #include <tuple>
 
+TEST_CASE("Meridian correction (tile space)", "[TileSurface]") {
+    SECTION("x == west") {
+        for (int zoom = 0; zoom < 15; zoom++) {
+            for (int x = 0; x < Tile::N(zoom); x++) {
+                CHECK(TileSurfaceTest::correctMeridianTile(x, x, zoom) == 0);
+            }
+        }
+    }
+
+    SECTION("2, 15, 4") {
+        // N = 2 ^ 4 = 16
+        // 15 == 0, 0 == 1, 1 == 2, 2 == 3, ...
+        CHECK(TileSurfaceTest::correctMeridianTile(2, 15, 4) == 3);
+    }
+
+    SECTION("2, 15, 5") {
+        // N = 2 ^ 5 = 32
+        // 15 == 0, 16 == 1, ..., 31 == 16, 0 == 17, 1 == 18, 2 == 19
+        CHECK(TileSurfaceTest::correctMeridianTile(2, 15, 5) == 19);
+    }
+
+    SECTION("15, 2, 4") {
+        // N = 2 ^ 4 == 16
+        // 2 == 0, 3 == 1, ..., 15 == 13, 0 == 14, 1 == 15
+        CHECK(TileSurfaceTest::correctMeridianTile(15, 2, 4) == 13);
+    }
+}
+
+TEST_CASE("Meridian correction (radians)", "[TileSurface]") {
+    SECTION("x == west") {
+        for (int frac = 0; frac < 16; frac++) {
+            double x = ((M_PI * 2.0) / 16.0) * static_cast<double>(frac) - M_PI;
+            double corrected = TileSurfaceTest::correctMeridianLon(x, x);
+            compareReals(corrected, -M_PI);
+        }
+    }
+
+    SECTION("x = 3pi/4, west=pi/2") {
+        double corrected = TileSurfaceTest::correctMeridianLon(3.0 * M_PI_4, M_PI_2);
+        compareReals(corrected, -M_PI + M_PI_4);
+    }
+
+    SECTION("x = pi/2, west=3pi/4") {
+        double corrected = TileSurfaceTest::correctMeridianLon(M_PI_2, 3.0 * M_PI_4);
+        compareReals(corrected, M_PI - M_PI_4);
+    }
+}
+
 TEST_CASE("Construction of a tile surface", "[TileSurface]") {
-    constexpr int zoom = 3;
+    constexpr int zoom = 6;
     constexpr int startX = 1;
     constexpr int numX = 3;
     constexpr int startY = 2;

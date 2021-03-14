@@ -26,6 +26,9 @@ public:
         int minY = first.y();
         int maxY = minY;
         for (const Tile & t : tiles) {
+            if (!t.valid()) {
+                continue;
+            }
             int x = correctMeridianTile(t.x(), westX, zoom);
             int y = t.y();
             if (x < minX) minX = x;

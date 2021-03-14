@@ -39,8 +39,8 @@ Tile::Tile(int x, int y, int zoom, bool cache) : m_x(x), m_y(y), m_zoom(zoom) {
                     res[idx * PNG_CHANNELS + 1],
                     res[idx * PNG_CHANNELS + 2]
                 );
-                LatLon ll = coordsToLatLon(static_cast<double>(x) + j / 256.0,
-                                           static_cast<double>(y) + i / 256.0,
+                LatLon ll = coordsToLatLon(static_cast<double>(x) + j / static_cast<double>(TILE_DIM_X),
+                                           static_cast<double>(y) + i / static_cast<double>(TILE_DIM_Y),
                                            zoom);
                 m_data[i][j] = {ll.lat, ll.lon, elev};
             }
@@ -72,7 +72,7 @@ double Tile::rgbToMeters(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 LatLon Tile::coordsToLatLon(double x, double y, int zoom) {
-    double n = std::pow(2.0, static_cast<double>(zoom));
+    auto n = static_cast<double>(N(zoom));
     return {
         .lat = std::atan(std::sinh(M_PI * (1.0 - 2.0 * y / n))),
         .lon = x / n * (2.0 * M_PI) - M_PI,
@@ -80,7 +80,7 @@ LatLon Tile::coordsToLatLon(double x, double y, int zoom) {
 }
 
 XY Tile::latLonToCoords(double lat, double lon, int zoom) {
-    double n = std::pow(2.0, static_cast<double>(zoom));
+    auto n = static_cast<double>(N(zoom));
     return {
         .x = n * ((lon + M_PI) / (2.0 * M_PI)),
         .y = n * (1.0 - (std::log(std::tan(lat) + secant(lat)) / M_PI)) / 2.0,
