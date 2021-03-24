@@ -8,7 +8,7 @@ using namespace geometry;
 
 class Surface {
 public:
-    // Apply a function to every point in the surface -- can transform lat, lon, or alt
+    // Apply a function to every point in the surface -- can transform lat, lon, and/or alt
     template <class UnaryFunction>
     void apply(UnaryFunction f);
 

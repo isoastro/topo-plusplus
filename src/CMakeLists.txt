@@ -29,6 +29,7 @@ target_link_libraries(Surface
 
 # Collection of tiles --> Surface
 add_library(TileSurface SHARED TileSurface.cpp)
+target_include_directories(TileSurface PUBLIC ../include)
 target_link_libraries(TileSurface
     PUBLIC Tile Surface)
 

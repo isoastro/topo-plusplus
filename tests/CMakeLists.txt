@@ -11,6 +11,7 @@ add_executable(tests
     testMain.cpp
     testTile.cpp
     testTileSurface.cpp
+    testGeometry.cpp
 )
 add_dependencies(tests Tile TileSurface)
 target_include_directories(tests PUBLIC . ../include)

@@ -7,6 +7,7 @@ namespace geometry {
 
 double secant(double x);
 
+// TODO: Move out of geometry into Earth-related namespace or something
 constexpr double EARTH_RADIUS_WGS84 = 6378137.0;
 constexpr double INV_FLATTENING_FACTOR_WGS84 = 298.257223563;
 
@@ -39,6 +40,8 @@ struct BoundingBox {
     [[nodiscard]] LatLon southeast() const { return {south, east}; }
 };
 
+// TODO: Consolidate LLA and Point into a single Vec3 or something, otherwise I may find myself duplicating functionality
+// between the two structs
 struct LLA {
     double lat;
     double lon;
@@ -50,11 +53,32 @@ struct Point {
     double y;
     double z;
 
-    Point() : x(0), y(0), z(0) {}
+    Point(double x, double y, double z) : x(x), y(y), z(z) {}
+    Point() : Point(0, 0, 0) {}
 
     // Construct a point from spherical coordinates to ECEF using the WGS84 model
     explicit Point(const LLA & sph);
+
+    // Treating the points as vectors, compute the dot or cross product
+    // TODO: The name of this struct maybe a little confusing in this case, may be worth while to follow other standards
+    // and go with Vec3 or something
+    [[nodiscard]] double dot(const Point & other) const;
+    [[nodiscard]] Point cross(const Point & other) const;
+
+    // 2-norm (Euclidean norm) - square root of sum of squares
+    [[nodiscard]] double norm() const;
+
+    // Unary and binary point operations
+    Point operator-() const; // Negation
+    Point & operator+=(const Point & rhs); // Addition
+    Point & operator-=(const Point & rhs); // Subtraction
+    Point & operator*=(double rhs); // Multiplication (scaling)
+    Point & operator/=(double rhs); // Division (scaling)
 };
+
+// Construct a unit normal vector from the three points provided
+// Segments are AB, then BC (right hand rule)
+Point normal(const Point & a, const Point & b, const Point & c);
 
 } // namespace geometry
 #endif // _geometry_H_
