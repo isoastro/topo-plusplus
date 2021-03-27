@@ -28,7 +28,7 @@ geometry::Point & geometry::Point::operator+=(const geometry::Point & rhs) {
     return *this;
 }
 
-geometry::Point operator+(geometry::Point lhs, const geometry::Point & rhs) {
+geometry::Point geometry::operator+(geometry::Point lhs, const geometry::Point & rhs) {
     lhs += rhs;
     return lhs;
 }
@@ -40,7 +40,7 @@ geometry::Point & geometry::Point::operator-=(const geometry::Point & rhs) {
     return *this;
 }
 
-geometry::Point operator-(geometry::Point lhs, const geometry::Point & rhs) {
+geometry::Point geometry::operator-(geometry::Point lhs, const geometry::Point & rhs) {
     lhs -= rhs;
     return lhs;
 }
@@ -52,7 +52,7 @@ geometry::Point & geometry::Point::operator*=(double rhs) {
     return *this;
 }
 
-geometry::Point operator*(geometry::Point lhs, double rhs) {
+geometry::Point geometry::operator*(geometry::Point lhs, double rhs) {
     lhs *= rhs;
     return lhs;
 }
@@ -64,7 +64,7 @@ geometry::Point & geometry::Point::operator/=(double rhs) {
     return *this;
 }
 
-geometry::Point operator/(geometry::Point lhs, double rhs) {
+geometry::Point geometry::operator/(geometry::Point lhs, double rhs) {
     lhs /= rhs;
     return lhs;
 }
@@ -85,5 +85,9 @@ double geometry::Point::norm() const {
 
 geometry::Point geometry::normal(const geometry::Point & a, const geometry::Point & b, const geometry::Point & c) {
     auto crossProduct = (b - a).cross(c - b);
-    return crossProduct / crossProduct.norm();
+    double norm = crossProduct.norm();
+    if (norm <= std::numeric_limits<decltype(norm)>::epsilon()) {
+        return {0, 0, 1};
+    }
+    return crossProduct / norm;
 }

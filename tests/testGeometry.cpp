@@ -148,3 +148,390 @@ TEST_CASE("Point const-methods", "[geometry]") {
         }
     }
 }
+
+TEST_CASE("Point math operations", "[geometry]") {
+    SECTION("Negation") {
+        Point lhs = {1, -2, 3};
+        Point res = -lhs;
+        CHECK(res.x == -lhs.x);
+        CHECK(res.y == -lhs.y);
+        CHECK(res.z == -lhs.z);
+    }
+
+    SECTION("Addition") {
+        Point lhs(1, -2, 3);
+        Point rhs;
+        SECTION("Zero") {
+            rhs = {0, 0, 0};
+            Point result = lhs + rhs;
+            CHECK(result.x == lhs.x);
+            CHECK(result.y == lhs.y);
+            CHECK(result.z == lhs.z);
+        }
+
+        SECTION("Negative") {
+            rhs = {-2, -2, -2};
+            Point result = lhs + rhs;
+            CHECK(result.x == lhs.x - 2);
+            CHECK(result.y == lhs.y - 2);
+            CHECK(result.z == lhs.z - 2);
+        }
+
+        SECTION("Positive") {
+            rhs = {2, 2, 2};
+            Point result = lhs + rhs;
+            CHECK(result.x == lhs.x + 2);
+            CHECK(result.y == lhs.y + 2);
+            CHECK(result.z == lhs.z + 2);
+        }
+
+        SECTION("Self") {
+            Point result = lhs + lhs;
+            CHECK(result.x == lhs.x + lhs.x);
+            CHECK(result.y == lhs.y + lhs.y);
+            CHECK(result.z == lhs.z + lhs.z);
+        }
+        // lhs did not change, all these methods are const
+        REQUIRE(lhs.x == 1);
+        REQUIRE(lhs.y == -2);
+        REQUIRE(lhs.z == 3);
+    }
+
+    SECTION("Auto-addition") {
+        Point lhs(1, -2, 3);
+        Point rhs;
+        SECTION("Zero") {
+            rhs = {0, 0, 0};
+            lhs += rhs;
+            CHECK(lhs.x == 1);
+            CHECK(lhs.y == -2);
+            CHECK(lhs.z == 3);
+        }
+
+        SECTION("Negative") {
+            rhs = {-2, -2, -2};
+            lhs += rhs;
+            CHECK(lhs.x == 1 - 2);
+            CHECK(lhs.y == -2 - 2);
+            CHECK(lhs.z == 3 - 2);
+        }
+
+        SECTION("Positive") {
+            rhs = {2, 2, 2};
+            lhs += rhs;
+            CHECK(lhs.x == 1 + 2);
+            CHECK(lhs.y == -2 + 2);
+            CHECK(lhs.z == 3 + 2);
+        }
+
+        SECTION("Self") {
+            lhs += lhs;
+            CHECK(lhs.x == 1 + 1);
+            CHECK(lhs.y == -2 - 2);
+            CHECK(lhs.z == 3 + 3);
+        }
+    }
+
+    SECTION("Subtraction") {
+        Point lhs(1, -2, 3);
+        Point rhs;
+        SECTION("Zero") {
+            rhs = {0, 0, 0};
+            Point result = lhs - rhs;
+            CHECK(result.x == lhs.x);
+            CHECK(result.y == lhs.y);
+            CHECK(result.z == lhs.z);
+        }
+
+        SECTION("Negative") {
+            rhs = {-2, -2, -2};
+            Point result = lhs - rhs;
+            CHECK(result.x == lhs.x + 2);
+            CHECK(result.y == lhs.y + 2);
+            CHECK(result.z == lhs.z + 2);
+        }
+
+        SECTION("Positive") {
+            rhs = {2, 2, 2};
+            Point result = lhs - rhs;
+            CHECK(result.x == lhs.x - 2);
+            CHECK(result.y == lhs.y - 2);
+            CHECK(result.z == lhs.z - 2);
+        }
+
+        SECTION("Self") {
+            Point result = lhs - lhs;
+            CHECK(result.x == 0);
+            CHECK(result.y == 0);
+            CHECK(result.z == 0);
+        }
+        // lhs did not change, all these methods are const
+        REQUIRE(lhs.x == 1);
+        REQUIRE(lhs.y == -2);
+        REQUIRE(lhs.z == 3);
+    }
+
+    SECTION("Auto-subtraction") {
+        Point lhs(1, -2, 3);
+        Point rhs;
+        SECTION("Zero") {
+            rhs = {0, 0, 0};
+            lhs -= rhs;
+            CHECK(lhs.x == 1);
+            CHECK(lhs.y == -2);
+            CHECK(lhs.z == 3);
+        }
+
+        SECTION("Negative") {
+            rhs = {-2, -2, -2};
+            lhs -= rhs;
+            CHECK(lhs.x == 1 + 2);
+            CHECK(lhs.y == -2 + 2);
+            CHECK(lhs.z == 3 + 2);
+        }
+
+        SECTION("Positive") {
+            rhs = {2, 2, 2};
+            lhs -= rhs;
+            CHECK(lhs.x == 1 - 2);
+            CHECK(lhs.y == -2 - 2);
+            CHECK(lhs.z == 3 - 2);
+        }
+
+        SECTION("Self") {
+            lhs -= lhs;
+            CHECK(lhs.x == 0);
+            CHECK(lhs.y == 0);
+            CHECK(lhs.z == 0);
+        }
+    }
+
+    SECTION("Multiplication") {
+        Point lhs(1, -2, 3);
+        double rhs;
+        SECTION("Zero") {
+            rhs = 0;
+            Point result = lhs * rhs;
+            CHECK(result.x == 0);
+            CHECK(result.y == 0);
+            CHECK(result.z == 0);
+        }
+
+        SECTION("One") {
+            rhs = 1;
+            Point result = lhs * rhs;
+            CHECK(result.x == lhs.x);
+            CHECK(result.y == lhs.y);
+            CHECK(result.z == lhs.z);
+        }
+
+        SECTION("Negative") {
+            rhs = -2;
+            Point result = lhs * rhs;
+            CHECK(result.x == lhs.x * -2);
+            CHECK(result.y == lhs.y * -2);
+            CHECK(result.z == lhs.z * -2);
+        }
+
+        SECTION("Positive") {
+            rhs = 2;
+            Point result = lhs * rhs;
+            CHECK(result.x == lhs.x * 2);
+            CHECK(result.y == lhs.y * 2);
+            CHECK(result.z == lhs.z * 2);
+        }
+
+        // lhs did not change, all these methods are const
+        REQUIRE(lhs.x == 1);
+        REQUIRE(lhs.y == -2);
+        REQUIRE(lhs.z == 3);
+    }
+
+    SECTION("Auto-multiplication") {
+        Point lhs(1, -2, 3);
+        double rhs;
+        SECTION("Zero") {
+            rhs = 0;
+            lhs *= rhs;
+            CHECK(lhs.x == 0);
+            CHECK(lhs.y == 0);
+            CHECK(lhs.z == 0);
+        }
+
+        SECTION("One") {
+            rhs = 1;
+            lhs *= rhs;
+            CHECK(lhs.x == 1);
+            CHECK(lhs.y == -2);
+            CHECK(lhs.z == 3);
+        }
+
+        SECTION("Negative") {
+            rhs = -2;
+            lhs *= rhs;
+            CHECK(lhs.x == 1 * -2);
+            CHECK(lhs.y == -2 * -2);
+            CHECK(lhs.z == 3 * -2);
+        }
+
+        SECTION("Positive") {
+            rhs = 2;
+            lhs *= rhs;
+            CHECK(lhs.x == 1 * 2);
+            CHECK(lhs.y == -2 * 2);
+            CHECK(lhs.z == 3 * 2);
+        }
+    }
+
+    SECTION("Division") {
+        Point lhs(1, -2, 3);
+        double rhs;
+        SECTION("Zero") {
+            rhs = 0;
+            Point result = lhs / rhs;
+            CHECK(std::isinf(result.x) == true);
+            CHECK(std::isinf(result.y) == true);
+            CHECK(std::isinf(result.z) == true);
+        }
+
+        SECTION("One") {
+            rhs = 1;
+            Point result = lhs / rhs;
+            CHECK(result.x == 1);
+            CHECK(result.y == -2);
+            CHECK(result.z == 3);
+        }
+
+        SECTION("Negative one") {
+            rhs = -1;
+            Point result = lhs / rhs;
+            CHECK(result.x == -1);
+            CHECK(result.y == 2);
+            CHECK(result.z == -3);
+        }
+
+        SECTION("Negative") {
+            rhs = -2;
+            Point result = lhs / rhs;
+            CHECK(result.x == lhs.x / -2);
+            CHECK(result.y == lhs.y / -2);
+            CHECK(result.z == lhs.z / -2);
+        }
+
+        SECTION("Positive") {
+            rhs = 2;
+            Point result = lhs / rhs;
+            CHECK(result.x == lhs.x / 2);
+            CHECK(result.y == lhs.y / 2);
+            CHECK(result.z == lhs.z / 2);
+        }
+
+        // lhs did not change, all these methods are const
+        REQUIRE(lhs.x == 1);
+        REQUIRE(lhs.y == -2);
+        REQUIRE(lhs.z == 3);
+    }
+
+    SECTION("Auto-division") {
+        Point lhs(1, -2, 3);
+        double rhs;
+        SECTION("Zero") {
+            rhs = 0;
+            lhs /= rhs;
+            CHECK(std::isinf(lhs.x) == true);
+            CHECK(std::isinf(lhs.y) == true);
+            CHECK(std::isinf(lhs.z) == true);
+        }
+
+        SECTION("One") {
+            rhs = 1;
+            lhs /= rhs;
+            CHECK(lhs.x == 1);
+            CHECK(lhs.y == -2);
+            CHECK(lhs.z == 3);
+        }
+
+        SECTION("Negative one") {
+            rhs = -1;
+            lhs /= rhs;
+            CHECK(lhs.x == -1);
+            CHECK(lhs.y == 2);
+            CHECK(lhs.z == -3);
+        }
+
+        SECTION("Negative") {
+            rhs = -2;
+            lhs /= rhs;
+            CHECK(lhs.x == 1.0 / -2.0);
+            CHECK(lhs.y == -2.0 / -2.0);
+            CHECK(lhs.z == 3.0 / -2.0);
+        }
+
+        SECTION("Positive") {
+            rhs = 2;
+            lhs /= rhs;
+            CHECK(lhs.x == 1.0 / 2.0);
+            CHECK(lhs.y == -2.0 / 2.0);
+            CHECK(lhs.z == 3.0 / 2.0);
+        }
+    }
+}
+
+TEST_CASE("Normal vector", "[geometry]") {
+    SECTION("90 degrees, flat z") {
+        Point a = {0, 0, 0};
+        Point b = {1, 1, 0};
+        Point c = {2, 0, 0};
+        SECTION("Left to right") {
+            Point norm = normal(a, b, c);
+            CHECK(norm.x == 0);
+            CHECK(norm.y == 0);
+            CHECK(norm.z == -1);
+        }
+        SECTION("Right to left") {
+            Point norm = normal(c, b, a);
+            CHECK(norm.x == 0);
+            CHECK(norm.y == 0);
+            CHECK(norm.z == 1);
+        }
+    }
+
+    SECTION("270 degrees, flat z") { // Opposite result of 90 degrees
+        Point a = {0, 0, 0};
+        Point b = {-1, -1, 0};
+        Point c = {2, 0, 0};
+        Point norm;
+        SECTION("Left to right") {
+            norm = normal(a, b, c);
+            CHECK(norm.x == 0);
+            CHECK(norm.y == 0);
+            CHECK(norm.z == 1);
+        }
+        SECTION("Right to left") {
+            norm = normal(c, b, a);
+            CHECK(norm.x == 0);
+            CHECK(norm.y == 0);
+            CHECK(norm.z == -1);
+        }
+        CHECK(norm.norm() == 1);
+    }
+
+    SECTION("Arbitrary") {
+        Point a = {3, -2, 8};
+        Point b = {-4, 11, 0};
+        Point c = {9, -5, -5};
+        Point norm = normal(a, b, c);
+        compareReals(norm.x, -0.78911034102321065);
+        compareReals(norm.y, -0.56832299172137968);
+        compareReals(norm.z, -0.23305331315193267);
+        compareReals(norm.norm(), 1.0);
+    }
+
+    SECTION("Equal") {
+        Point a = {3, -2, 8};
+        Point norm = normal(a, a, a);
+        CHECK(norm.x == 0);
+        CHECK(norm.y == 0);
+        CHECK(norm.z == 1);
+    }
+}

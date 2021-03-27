@@ -76,6 +76,12 @@ struct Point {
     Point & operator/=(double rhs); // Division (scaling)
 };
 
+// Binary operations
+Point operator+(Point lhs, const Point & rhs);
+Point operator-(Point lhs, const Point & rhs);
+Point operator*(Point lhs, double rhs);
+Point operator/(Point lhs, double rhs);
+
 // Construct a unit normal vector from the three points provided
 // Segments are AB, then BC (right hand rule)
 Point normal(const Point & a, const Point & b, const Point & c);
