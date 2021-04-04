@@ -37,9 +37,9 @@ public:
             if (y > maxY) maxY = y;
         }
 
-        constexpr LLA fillVal = {std::numeric_limits<double>::quiet_NaN(),
-                                 std::numeric_limits<double>::quiet_NaN(),
-                                 std::numeric_limits<double>::quiet_NaN()};
+        constexpr Vec3 fillVal = {std::numeric_limits<double>::quiet_NaN(),
+                                  std::numeric_limits<double>::quiet_NaN(),
+                                  std::numeric_limits<double>::quiet_NaN()};
         m_numLon = ((maxX - minX) + 1) * TILE_DIM_X;
         m_numLat = ((maxY - minY) + 1) * TILE_DIM_Y;
         m_data.resize(m_numLat * m_numLon, fillVal);
@@ -55,16 +55,16 @@ public:
             // Each row is contiguous, but the rows aren't necessarily next to each other in the overall surface
             for (size_t i = 0; i < TILE_DIM_Y; i++) {
                 const auto & row = t.row(i);
-                std::array<LLA, TILE_DIM_X> correctedRow = {};
+                std::array<Vec3, TILE_DIM_X> correctedRow = {};
                 std::transform(row.begin(), row.end(), correctedRow.begin(),
-                    [westLon](const LLA & point) -> LLA {
-                        return {.lat = correctMeridianLon(point.lat, westLon),
-                                .lon = point.lon,
-                                .alt = point.alt};
+                    [westLon](const Vec3 & point) -> Vec3 {
+                        return {.x = correctMeridianLon(point.x, westLon),
+                                .y = point.y,
+                                .z = point.z};
                 });
 
                 size_t idx = ((y + i) * m_numLon) + x;
-                std::copy(row.begin(), row.end(), m_data.begin() + idx);
+                std::copy(correctedRow.begin(), correctedRow.end(), m_data.begin() + idx);
             }
         }
     }

@@ -4,24 +4,17 @@
 
 using namespace geometry;
 
-TEST_CASE("Point construction", "[geometry]") {
-    SECTION("No args") {
-        Point p;
-        CHECK(p.x == 0.0);
-        CHECK(p.y == 0.0);
-        CHECK(p.z == 0.0);
-    }
-
+TEST_CASE("Vec3 construction", "[geometry]") {
     SECTION("3 args") {
-        Point p(1.2, -2.3, 3.4);
+        Vec3 p = {1.2, -2.3, 3.4};
         CHECK(p.x == 1.2);
         CHECK(p.y == -2.3);
         CHECK(p.z == 3.4);
     }
 
     SECTION("Copy") {
-        Point p(1, 2, 3);
-        Point q(p);
+        Vec3 p = {1, 2, 3};
+        Vec3 q = {p};
         p.x += 1;
         CHECK(p.x == 2.0); // changed, but q didn't
         CHECK(p.y == 2.0);
@@ -32,8 +25,8 @@ TEST_CASE("Point construction", "[geometry]") {
     }
 
     SECTION("Assign") {
-        Point p(1, 2, 3);
-        Point q = p;
+        Vec3 p = {1, 2, 3};
+        Vec3 q = p;
         p.x += 1;
         CHECK(p.x == 2.0); // changed, but q didn't
         CHECK(p.y == 2.0);
@@ -48,31 +41,31 @@ TEST_CASE("Point construction", "[geometry]") {
     }
 }
 
-TEST_CASE("Point const-methods", "[geometry]") {
+TEST_CASE("Vec3 const-methods", "[geometry]") {
     SECTION("Dot product") {
         SECTION("Zero lhs") {
-            Point p(0, 0, 0);
-            Point q(-5, -6, 7);
+            Vec3 p = {0, 0, 0};
+            Vec3 q = {-5, -6, 7};
             double dot = p.dot(q);
             CHECK(dot == 0.0); // Anything dot 0 is zero
         }
 
         SECTION("Zero rhs") {
-            Point p(1, -2, 3);
-            Point q(0, 0, 0);
+            Vec3 p = {1, -2, 3};
+            Vec3 q = {0, 0, 0};
             double dot = p.dot(q);
             CHECK(dot == 0.0); // Anything dot 0 is zero
         }
 
         SECTION("Non zero") {
-            Point p(1, -2, 3);
-            Point q(-9, -6, 11);
+            Vec3 p = {1, -2, 3};
+            Vec3 q = {-9, -6, 11};
             double dot = p.dot(q);
             compareReals(dot, 36.0); // -9 + 12 + 33 = 36
         }
 
         SECTION("Self") {
-            Point p(1, -2, 3);
+            Vec3 p = {1, -2, 3};
             double dot = p.dot(p);
             compareReals(dot, 14.0); // 1 + 4 + 9 = 14
         }
@@ -80,27 +73,27 @@ TEST_CASE("Point const-methods", "[geometry]") {
 
     SECTION("Cross product") {
         SECTION("Zero lhs") {
-            Point p(0, 0, 0);
-            Point q(-5, -6, 7);
-            Point r = p.cross(q);
+            Vec3 p = {0, 0, 0};
+            Vec3 q = {-5, -6, 7};
+            Vec3 r = p.cross(q);
             CHECK(r.x == 0.0);
             CHECK(r.y == 0.0);
             CHECK(r.z == 0.0);
         }
 
         SECTION("Zero rhs") {
-            Point p(1, -2, 3);
-            Point q(0, 0, 0);
-            Point r = p.cross(q);
+            Vec3 p = {1, -2, 3};
+            Vec3 q = {0, 0, 0};
+            Vec3 r = p.cross(q);
             CHECK(r.x == 0.0);
             CHECK(r.y == 0.0);
             CHECK(r.z == 0.0);
         }
 
         SECTION("Non zero") {
-            Point p(1, -2, 3);
-            Point q(-9, -6, 11);
-            Point r = p.cross(q);
+            Vec3 p = {1, -2, 3};
+            Vec3 q = {-9, -6, 11};
+            Vec3 r = p.cross(q);
             compareReals(r.x, -4.0);
             compareReals(r.y, -38.0);
             compareReals(r.z, -24.0);
@@ -109,13 +102,13 @@ TEST_CASE("Point const-methods", "[geometry]") {
 
     SECTION("2-norm") {
         SECTION("Zero") {
-            Point p(0, 0, 0);
+            Vec3 p = {0, 0, 0};
             double norm = p.norm();
             CHECK(norm == 0.0);
         }
 
         SECTION("Unit vector") {
-            Point p(0, 0, 0);
+            Vec3 p = {0, 0, 0};
             SECTION("x") {
                 p.x = 1;
             }
@@ -142,28 +135,28 @@ TEST_CASE("Point const-methods", "[geometry]") {
         }
 
         SECTION("Non zero") {
-            Point p(-9, -6, 11);
+            Vec3 p = {-9, -6, 11};
             double norm = p.norm();
             compareReals(norm, 15.427248620541512);
         }
     }
 }
 
-TEST_CASE("Point math operations", "[geometry]") {
+TEST_CASE("Vec3 math operations", "[geometry]") {
     SECTION("Negation") {
-        Point lhs = {1, -2, 3};
-        Point res = -lhs;
+        Vec3 lhs = {1, -2, 3};
+        Vec3 res = -lhs;
         CHECK(res.x == -lhs.x);
         CHECK(res.y == -lhs.y);
         CHECK(res.z == -lhs.z);
     }
 
     SECTION("Addition") {
-        Point lhs(1, -2, 3);
-        Point rhs;
+        Vec3 lhs = {1, -2, 3};
+        Vec3 rhs;
         SECTION("Zero") {
             rhs = {0, 0, 0};
-            Point result = lhs + rhs;
+            Vec3 result = lhs + rhs;
             CHECK(result.x == lhs.x);
             CHECK(result.y == lhs.y);
             CHECK(result.z == lhs.z);
@@ -171,7 +164,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Negative") {
             rhs = {-2, -2, -2};
-            Point result = lhs + rhs;
+            Vec3 result = lhs + rhs;
             CHECK(result.x == lhs.x - 2);
             CHECK(result.y == lhs.y - 2);
             CHECK(result.z == lhs.z - 2);
@@ -179,14 +172,14 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Positive") {
             rhs = {2, 2, 2};
-            Point result = lhs + rhs;
+            Vec3 result = lhs + rhs;
             CHECK(result.x == lhs.x + 2);
             CHECK(result.y == lhs.y + 2);
             CHECK(result.z == lhs.z + 2);
         }
 
         SECTION("Self") {
-            Point result = lhs + lhs;
+            Vec3 result = lhs + lhs;
             CHECK(result.x == lhs.x + lhs.x);
             CHECK(result.y == lhs.y + lhs.y);
             CHECK(result.z == lhs.z + lhs.z);
@@ -198,8 +191,8 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Auto-addition") {
-        Point lhs(1, -2, 3);
-        Point rhs;
+        Vec3 lhs = {1, -2, 3};
+        Vec3 rhs;
         SECTION("Zero") {
             rhs = {0, 0, 0};
             lhs += rhs;
@@ -233,11 +226,11 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Subtraction") {
-        Point lhs(1, -2, 3);
-        Point rhs;
+        Vec3 lhs = {1, -2, 3};
+        Vec3 rhs;
         SECTION("Zero") {
             rhs = {0, 0, 0};
-            Point result = lhs - rhs;
+            Vec3 result = lhs - rhs;
             CHECK(result.x == lhs.x);
             CHECK(result.y == lhs.y);
             CHECK(result.z == lhs.z);
@@ -245,7 +238,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Negative") {
             rhs = {-2, -2, -2};
-            Point result = lhs - rhs;
+            Vec3 result = lhs - rhs;
             CHECK(result.x == lhs.x + 2);
             CHECK(result.y == lhs.y + 2);
             CHECK(result.z == lhs.z + 2);
@@ -253,14 +246,14 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Positive") {
             rhs = {2, 2, 2};
-            Point result = lhs - rhs;
+            Vec3 result = lhs - rhs;
             CHECK(result.x == lhs.x - 2);
             CHECK(result.y == lhs.y - 2);
             CHECK(result.z == lhs.z - 2);
         }
 
         SECTION("Self") {
-            Point result = lhs - lhs;
+            Vec3 result = lhs - lhs;
             CHECK(result.x == 0);
             CHECK(result.y == 0);
             CHECK(result.z == 0);
@@ -272,8 +265,8 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Auto-subtraction") {
-        Point lhs(1, -2, 3);
-        Point rhs;
+        Vec3 lhs = {1, -2, 3};
+        Vec3 rhs;
         SECTION("Zero") {
             rhs = {0, 0, 0};
             lhs -= rhs;
@@ -307,11 +300,11 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Multiplication") {
-        Point lhs(1, -2, 3);
+        Vec3 lhs = {1, -2, 3};
         double rhs;
         SECTION("Zero") {
             rhs = 0;
-            Point result = lhs * rhs;
+            Vec3 result = lhs * rhs;
             CHECK(result.x == 0);
             CHECK(result.y == 0);
             CHECK(result.z == 0);
@@ -319,7 +312,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("One") {
             rhs = 1;
-            Point result = lhs * rhs;
+            Vec3 result = lhs * rhs;
             CHECK(result.x == lhs.x);
             CHECK(result.y == lhs.y);
             CHECK(result.z == lhs.z);
@@ -327,7 +320,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Negative") {
             rhs = -2;
-            Point result = lhs * rhs;
+            Vec3 result = lhs * rhs;
             CHECK(result.x == lhs.x * -2);
             CHECK(result.y == lhs.y * -2);
             CHECK(result.z == lhs.z * -2);
@@ -335,7 +328,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Positive") {
             rhs = 2;
-            Point result = lhs * rhs;
+            Vec3 result = lhs * rhs;
             CHECK(result.x == lhs.x * 2);
             CHECK(result.y == lhs.y * 2);
             CHECK(result.z == lhs.z * 2);
@@ -348,7 +341,7 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Auto-multiplication") {
-        Point lhs(1, -2, 3);
+        Vec3 lhs = {1, -2, 3};
         double rhs;
         SECTION("Zero") {
             rhs = 0;
@@ -384,11 +377,11 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Division") {
-        Point lhs(1, -2, 3);
+        Vec3 lhs = {1, -2, 3};
         double rhs;
         SECTION("Zero") {
             rhs = 0;
-            Point result = lhs / rhs;
+            Vec3 result = lhs / rhs;
             CHECK(std::isinf(result.x) == true);
             CHECK(std::isinf(result.y) == true);
             CHECK(std::isinf(result.z) == true);
@@ -396,7 +389,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("One") {
             rhs = 1;
-            Point result = lhs / rhs;
+            Vec3 result = lhs / rhs;
             CHECK(result.x == 1);
             CHECK(result.y == -2);
             CHECK(result.z == 3);
@@ -404,7 +397,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Negative one") {
             rhs = -1;
-            Point result = lhs / rhs;
+            Vec3 result = lhs / rhs;
             CHECK(result.x == -1);
             CHECK(result.y == 2);
             CHECK(result.z == -3);
@@ -412,7 +405,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Negative") {
             rhs = -2;
-            Point result = lhs / rhs;
+            Vec3 result = lhs / rhs;
             CHECK(result.x == lhs.x / -2);
             CHECK(result.y == lhs.y / -2);
             CHECK(result.z == lhs.z / -2);
@@ -420,7 +413,7 @@ TEST_CASE("Point math operations", "[geometry]") {
 
         SECTION("Positive") {
             rhs = 2;
-            Point result = lhs / rhs;
+            Vec3 result = lhs / rhs;
             CHECK(result.x == lhs.x / 2);
             CHECK(result.y == lhs.y / 2);
             CHECK(result.z == lhs.z / 2);
@@ -433,7 +426,7 @@ TEST_CASE("Point math operations", "[geometry]") {
     }
 
     SECTION("Auto-division") {
-        Point lhs(1, -2, 3);
+        Vec3 lhs = {1, -2, 3};
         double rhs;
         SECTION("Zero") {
             rhs = 0;
@@ -479,17 +472,17 @@ TEST_CASE("Point math operations", "[geometry]") {
 
 TEST_CASE("Normal vector", "[geometry]") {
     SECTION("90 degrees, flat z") {
-        Point a = {0, 0, 0};
-        Point b = {1, 1, 0};
-        Point c = {2, 0, 0};
+        Vec3 a = {0, 0, 0};
+        Vec3 b = {1, 1, 0};
+        Vec3 c = {2, 0, 0};
         SECTION("Left to right") {
-            Point norm = normal(a, b, c);
+            Vec3 norm = normal(a, b, c);
             CHECK(norm.x == 0);
             CHECK(norm.y == 0);
             CHECK(norm.z == -1);
         }
         SECTION("Right to left") {
-            Point norm = normal(c, b, a);
+            Vec3 norm = normal(c, b, a);
             CHECK(norm.x == 0);
             CHECK(norm.y == 0);
             CHECK(norm.z == 1);
@@ -497,10 +490,10 @@ TEST_CASE("Normal vector", "[geometry]") {
     }
 
     SECTION("270 degrees, flat z") { // Opposite result of 90 degrees
-        Point a = {0, 0, 0};
-        Point b = {-1, -1, 0};
-        Point c = {2, 0, 0};
-        Point norm;
+        Vec3 a = {0, 0, 0};
+        Vec3 b = {-1, -1, 0};
+        Vec3 c = {2, 0, 0};
+        Vec3 norm;
         SECTION("Left to right") {
             norm = normal(a, b, c);
             CHECK(norm.x == 0);
@@ -517,10 +510,10 @@ TEST_CASE("Normal vector", "[geometry]") {
     }
 
     SECTION("Arbitrary") {
-        Point a = {3, -2, 8};
-        Point b = {-4, 11, 0};
-        Point c = {9, -5, -5};
-        Point norm = normal(a, b, c);
+        Vec3 a = {3, -2, 8};
+        Vec3 b = {-4, 11, 0};
+        Vec3 c = {9, -5, -5};
+        Vec3 norm = normal(a, b, c);
         compareReals(norm.x, -0.78911034102321065);
         compareReals(norm.y, -0.56832299172137968);
         compareReals(norm.z, -0.23305331315193267);
@@ -528,8 +521,8 @@ TEST_CASE("Normal vector", "[geometry]") {
     }
 
     SECTION("Equal") {
-        Point a = {3, -2, 8};
-        Point norm = normal(a, a, a);
+        Vec3 a = {3, -2, 8};
+        Vec3 norm = normal(a, a, a);
         CHECK(norm.x == 0);
         CHECK(norm.y == 0);
         CHECK(norm.z == 1);

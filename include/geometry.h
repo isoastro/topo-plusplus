@@ -40,51 +40,35 @@ struct BoundingBox {
     [[nodiscard]] LatLon southeast() const { return {south, east}; }
 };
 
-// TODO: Consolidate LLA and Point into a single Vec3 or something, otherwise I may find myself duplicating functionality
-// between the two structs
-struct LLA {
-    double lat;
-    double lon;
-    double alt;
-};
-
-struct Point {
+struct Vec3 {
     double x;
     double y;
     double z;
 
-    Point(double x, double y, double z) : x(x), y(y), z(z) {}
-    Point() : Point(0, 0, 0) {}
-
-    // Construct a point from spherical coordinates to ECEF using the WGS84 model
-    explicit Point(const LLA & sph);
-
-    // Treating the points as vectors, compute the dot or cross product
-    // TODO: The name of this struct maybe a little confusing in this case, may be worth while to follow other standards
-    // and go with Vec3 or something
-    [[nodiscard]] double dot(const Point & other) const;
-    [[nodiscard]] Point cross(const Point & other) const;
+    // Treating as vectors, compute the dot or cross product
+    [[nodiscard]] double dot(const Vec3 & other) const;
+    [[nodiscard]] Vec3 cross(const Vec3 & other) const;
 
     // 2-norm (Euclidean norm) - square root of sum of squares
     [[nodiscard]] double norm() const;
 
-    // Unary and binary point operations
-    Point operator-() const; // Negation
-    Point & operator+=(const Point & rhs); // Addition
-    Point & operator-=(const Point & rhs); // Subtraction
-    Point & operator*=(double rhs); // Multiplication (scaling)
-    Point & operator/=(double rhs); // Division (scaling)
+    // Unary and binary operations
+    Vec3 operator-() const; // Negation
+    Vec3 & operator+=(const Vec3 & rhs); // Addition
+    Vec3 & operator-=(const Vec3 & rhs); // Subtraction
+    Vec3 & operator*=(double rhs); // Multiplication (scaling)
+    Vec3 & operator/=(double rhs); // Division (scaling)
 };
 
 // Binary operations
-Point operator+(Point lhs, const Point & rhs);
-Point operator-(Point lhs, const Point & rhs);
-Point operator*(Point lhs, double rhs);
-Point operator/(Point lhs, double rhs);
+Vec3 operator+(Vec3 lhs, const Vec3 & rhs);
+Vec3 operator-(Vec3 lhs, const Vec3 & rhs);
+Vec3 operator*(Vec3 lhs, double rhs);
+Vec3 operator/(Vec3 lhs, double rhs);
 
 // Construct a unit normal vector from the three points provided
 // Segments are AB, then BC (right hand rule)
-Point normal(const Point & a, const Point & b, const Point & c);
+Vec3 normal(const Vec3 & a, const Vec3 & b, const Vec3 & c);
 
 } // namespace geometry
 #endif // _geometry_H_

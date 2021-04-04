@@ -25,7 +25,7 @@ public:
     [[nodiscard]] int zoom() const { return m_zoom; }
     [[nodiscard]] bool valid() const { return m_valid; }
 
-    [[nodiscard]] const std::array<LLA, TILE_DIM_X> & row(size_t idx) const { return m_data[idx]; }
+    [[nodiscard]] const std::array<Vec3, TILE_DIM_X> & row(size_t idx) const { return m_data[idx]; }
 
     // TODO: Could be cool to add static methods to construct from a filename string?
 
@@ -45,7 +45,7 @@ private:
 
     bool m_valid = false;
 
-    std::array<std::array<LLA, TILE_DIM_X>, TILE_DIM_Y> m_data;
+    std::array<std::array<Vec3, TILE_DIM_X>, TILE_DIM_Y> m_data;
 };
 
 #endif // _Tile_H_

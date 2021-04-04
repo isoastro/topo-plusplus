@@ -83,26 +83,26 @@ TEST_CASE("Construction of a tile surface", "[TileSurface]") {
     // - Latitude does not change within a row
     // - Longitude increases from west to east
     // - Longitude does not change within a row
-    auto [lastLat, lastLon, ignoreme] = surf.at(0, 0);
+    auto [lastLon, lastLat, ignoreme] = surf.at(0, 0);
     for (size_t x = 0; x < surf.numLon(); x++) {
         // This point is the top of the meridian
         // Reset lastLat as we work our way down the meridian in the next loop
-        auto [lastLat, lon, ignoreme] = surf.at(x, 0);
+        auto [lon, lastLat, ignoreme] = surf.at(x, 0);
         if (x != 0) {
             CHECK(lon > lastLon);
             lastLon = lon;
         }
         for (size_t y = 0; y < surf.numLat(); y++) {
             auto point = surf.at(x, y);
-            auto uninitialized = std::isnan(point.lat) || std::isnan(point.lon) || std::isnan(point.alt);
+            auto uninitialized = std::isnan(point.x) || std::isnan(point.y) || std::isnan(point.z);
             CHECK(uninitialized == false);
 
-            CHECK(point.lon == surf.at(x, 0).lon); // longitude is the same for all y
-            CHECK(point.lat == surf.at(0, y).lat); // latitude is the same for all x
+            CHECK(point.x == surf.at(x, 0).x); // longitude is the same for all y
+            CHECK(point.y == surf.at(0, y).y); // latitude is the same for all x
 
             if (y != 0) {
-                CHECK(point.lat < lastLat);
-                lastLat = point.lat;
+                CHECK(point.y < lastLat);
+                lastLat = point.y;
             }
         }
     }

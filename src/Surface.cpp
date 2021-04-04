@@ -9,16 +9,16 @@ void Surface::apply(UnaryFunction f) {
 }
 
 void Surface::scaleAlt(double factor) {
-    apply([factor](const LLA & point) -> LLA {
+    apply([factor](const Vec3 & point) -> Vec3 {
         return {
-            .lat = point.lat,
-            .lon = point.lon,
-            .alt = point.alt * factor,
+            .x = point.x,
+            .y = point.y,
+            .z = point.z * factor,
         };
     });
 }
 
-const LLA & Surface::at(size_t x, size_t y) const {
+const Vec3 & Surface::at(size_t x, size_t y) const {
     auto idx = subToIdx(x, y);
     if (idx > m_data.size()) {
         throw std::out_of_range("Attempt to access point out of range");

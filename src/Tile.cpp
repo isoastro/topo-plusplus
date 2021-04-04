@@ -42,7 +42,7 @@ Tile::Tile(int x, int y, int zoom, bool cache) : m_x(x), m_y(y), m_zoom(zoom) {
                 LatLon ll = coordsToLatLon(static_cast<double>(x) + j / static_cast<double>(TILE_DIM_X),
                                            static_cast<double>(y) + i / static_cast<double>(TILE_DIM_Y),
                                            zoom);
-                m_data[i][j] = {ll.lat, ll.lon, elev};
+                m_data[i][j] = {ll.lon, ll.lat, elev};
             }
         }
 

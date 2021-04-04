@@ -25,11 +25,11 @@ public:
     [[nodiscard]] auto rbegin() const { return m_data.crbegin(); }
     [[nodiscard]] auto rend() const { return m_data.crend(); }
     [[nodiscard]] auto size() const { return m_data.size(); }
-    [[nodiscard]] const LLA & at(size_t x, size_t y) const;
+    [[nodiscard]] const Vec3 & at(size_t x, size_t y) const;
 protected:
     [[nodiscard]] size_t subToIdx(size_t x, size_t y) const;
 
-    std::vector<LLA> m_data = {};
+    std::vector<Vec3> m_data = {};
 
     // Overall dimensions in lat/lon
     // m_data.size() == m_numLat * m_numLon
