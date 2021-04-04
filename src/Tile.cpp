@@ -7,6 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+using namespace geometry;
+
 constexpr char URL_HEAD[] = "http://s3.amazonaws.com/elevation-tiles-prod/terrarium/";
 
 Tile::Tile(int x, int y, int zoom, bool cache) : m_x(x), m_y(y), m_zoom(zoom) {

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+using namespace geometry;
+
 template<class UnaryFunction>
 void Surface::apply(UnaryFunction f) {
     std::transform(m_data.begin(), m_data.end(), m_data.begin(), f);

@@ -8,7 +8,7 @@
 class TileSurface : public Surface {
 public:
     template<class Container>
-    explicit TileSurface(const Container & tiles, const BoundingBox & bbox) {
+    explicit TileSurface(const Container & tiles, const geometry::BoundingBox & bbox) {
         // Do a first pass through the container to determine the location of the tiles in the overall bounding box
         // This means we know where to put tiles into the data and avoids having to reallocate as we go
         // Bounding box coordinates are in x/y tile-space
@@ -37,9 +37,9 @@ public:
             if (y > maxY) maxY = y;
         }
 
-        constexpr Vec3 fillVal = {std::numeric_limits<double>::quiet_NaN(),
-                                  std::numeric_limits<double>::quiet_NaN(),
-                                  std::numeric_limits<double>::quiet_NaN()};
+        constexpr geometry::Vec3 fillVal = {std::numeric_limits<double>::quiet_NaN(),
+                                            std::numeric_limits<double>::quiet_NaN(),
+                                            std::numeric_limits<double>::quiet_NaN()};
         m_numLon = ((maxX - minX) + 1) * TILE_DIM_X;
         m_numLat = ((maxY - minY) + 1) * TILE_DIM_Y;
         m_data.resize(m_numLat * m_numLon, fillVal);
@@ -55,9 +55,9 @@ public:
             // Each row is contiguous, but the rows aren't necessarily next to each other in the overall surface
             for (size_t i = 0; i < TILE_DIM_Y; i++) {
                 const auto & row = t.row(i);
-                std::array<Vec3, TILE_DIM_X> correctedRow = {};
+                std::array<geometry::Vec3, TILE_DIM_X> correctedRow = {};
                 std::transform(row.begin(), row.end(), correctedRow.begin(),
-                    [westLon](const Vec3 & point) -> Vec3 {
+                    [westLon](const geometry::Vec3 & point) -> geometry::Vec3 {
                         return {.x = correctMeridianLon(point.x, westLon),
                                 .y = point.y,
                                 .z = point.z};

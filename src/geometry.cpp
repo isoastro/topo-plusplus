@@ -5,17 +5,19 @@ double geometry::secant(double x) {
     return 1.0 / std::cos(x);
 }
 
-//geometry::Vec3::Vec3(const geometry::Vec3 & sph) {
-//    double cosLat = std::cos(sph.y);
-//    double sinLat = std::sin(sph.y);
-//
-//    double C = 1.0 / std::sqrt(square(cosLat) + FF_WGS84 * square(sinLat));
-//    double S = C * FF_WGS84;
-//
-//    x = (EARTH_RADIUS_WGS84 * C + sph.z) * cosLat * std::cos(sph.x);
-//    y = (EARTH_RADIUS_WGS84 * C + sph.z) * cosLat * std::sin(sph.x);
-//    z = (EARTH_RADIUS_WGS84 * S + sph.z) * sinLat;
-//}
+geometry::Vec3 geometry::Vec3::fromECEF(const geometry::Vec3 & sph) {
+    double cosLat = std::cos(sph.y);
+    double sinLat = std::sin(sph.y);
+
+    double C = 1.0 / std::sqrt(square(cosLat) + FF_WGS84 * square(sinLat));
+    double S = C * FF_WGS84;
+
+    return {
+        .x = (EARTH_RADIUS_WGS84 * C + sph.z) * cosLat * std::cos(sph.x),
+        .y = (EARTH_RADIUS_WGS84 * C + sph.z) * cosLat * std::sin(sph.x),
+        .z = (EARTH_RADIUS_WGS84 * S + sph.z) * sinLat,
+    };
+}
 
 geometry::Vec3 geometry::Vec3::operator-() const {
     return { -this->x, -this->y, -this->z };
@@ -90,4 +92,15 @@ geometry::Vec3 geometry::normal(const geometry::Vec3 & a, const geometry::Vec3 &
         return {0, 0, 1};
     }
     return crossProduct / norm;
+}
+
+std::ostream & geometry::operator<<(std::ostream & os, const geometry::Vec3 & v) {
+    auto val = static_cast<float>(v.x);
+    os.write(reinterpret_cast<const char *>(&val), sizeof(val));
+    val = static_cast<float>(v.y);
+    os.write(reinterpret_cast<const char *>(&val), sizeof(val));
+    val = static_cast<float>(v.z);
+    os.write(reinterpret_cast<const char *>(&val), sizeof(val));
+
+    return os;
 }

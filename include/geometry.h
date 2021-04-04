@@ -2,6 +2,7 @@
 #define _geometry_H_
 
 #include <cmath>
+#include <iostream>
 
 namespace geometry {
 
@@ -45,6 +46,8 @@ struct Vec3 {
     double y;
     double z;
 
+    static Vec3 fromECEF(const Vec3 & sph);
+
     // Treating as vectors, compute the dot or cross product
     [[nodiscard]] double dot(const Vec3 & other) const;
     [[nodiscard]] Vec3 cross(const Vec3 & other) const;
@@ -59,6 +62,8 @@ struct Vec3 {
     Vec3 & operator*=(double rhs); // Multiplication (scaling)
     Vec3 & operator/=(double rhs); // Division (scaling)
 };
+
+std::ostream & operator<<(std::ostream & os, const Vec3 & v);
 
 // Binary operations
 Vec3 operator+(Vec3 lhs, const Vec3 & rhs);

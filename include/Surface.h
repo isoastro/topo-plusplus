@@ -4,8 +4,6 @@
 #include <vector>
 #include "geometry.h"
 
-using namespace geometry;
-
 class Surface {
 public:
     // Apply a function to every point in the surface -- can transform lat, lon, and/or alt
@@ -25,18 +23,18 @@ public:
     [[nodiscard]] auto rbegin() const { return m_data.crbegin(); }
     [[nodiscard]] auto rend() const { return m_data.crend(); }
     [[nodiscard]] auto size() const { return m_data.size(); }
-    [[nodiscard]] const Vec3 & at(size_t x, size_t y) const;
+    [[nodiscard]] const geometry::Vec3 & at(size_t x, size_t y) const;
 protected:
     [[nodiscard]] size_t subToIdx(size_t x, size_t y) const;
 
-    std::vector<Vec3> m_data = {};
+    std::vector<geometry::Vec3> m_data = {};
 
     // Overall dimensions in lat/lon
     // m_data.size() == m_numLat * m_numLon
     size_t m_numLat = 0;
     size_t m_numLon = 0;
 
-    BoundingBox m_boundingBox = {0, 0, 0, 0};
+    geometry::BoundingBox m_boundingBox = {0, 0, 0, 0};
 };
 
 #endif // _Surface_H_

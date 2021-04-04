@@ -33,8 +33,15 @@ target_include_directories(TileSurface PUBLIC ../include)
 target_link_libraries(TileSurface
     PUBLIC Tile Surface)
 
+# Surface -> STL conversion
+add_library(STLWriter SHARED STLWriter.cpp)
+target_include_directories(STLWriter PUBLIC ../include)
+target_link_libraries(STLWriter
+    PUBLIC Surface)
+
 target_link_libraries(topo
     Tile
     Surface
     TileSurface
+    STLWriter
 )

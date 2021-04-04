@@ -2,6 +2,8 @@
 #include "Tile.h"
 #include "testCommon.h"
 
+using namespace geometry;
+
 constexpr double maxLat = 1.4844222297453323;
 
 TEST_CASE("Get Tile", "[Tile]") {

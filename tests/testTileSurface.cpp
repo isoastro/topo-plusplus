@@ -4,6 +4,8 @@
 #include "TileSurfaceTest.h"
 #include <tuple>
 
+using namespace geometry;
+
 TEST_CASE("Meridian correction (tile space)", "[TileSurface]") {
     SECTION("x == west") {
         for (int zoom = 0; zoom < 15; zoom++) {
